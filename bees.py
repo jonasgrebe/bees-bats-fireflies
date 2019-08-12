@@ -7,22 +7,22 @@ class BeesAlgorithm():
     def __init__(self, n, ns, ne, nb, nre, nrb, range_min, range_max, shrink_factor, stgn_lim):
         self._validate(ns, ne, nb, nre, nrb)
         
-        self.n = n
-        self.ns = ns
-        self.ne = ne
-        self.nb = nb
-        self.nre = nre
-        self.nrb = nrb
+        self.n = n # dimensionality of solution-space
+        self.ns = ns # number of sites
+        self.ne = ne # numer ob elite sites
+        self.nb = nb # number of best sites
+        self.nre = nre # number of recruits for elite sites
+        self.nrb = nrb # number of recruits for best sites
         
         self.range_min = range_min
         self.range_max = range_max
         
-        self.shrink_factor = shrink_factor
-        self.stgn_lim = stgn_lim
+        self.shrink_factor = shrink_factor # neighborhood shrinking factor
+        self.stgn_lim = stgn_lim # stagnation limit
         
         self.scout = None
         self.flower_patch = None
-        self.initial_nght = 3.0
+        self.initial_nght = 1.0
         
         self.best_sites = []
         
@@ -30,15 +30,13 @@ class BeesAlgorithm():
         pass
     
     
-    def visualize(self, t, res=100):
-        if self.n != 2:
-            return
-        
-        # visualisation
+    def visualize2d(self, t, res=100):
+        # 2d visualisation
         x = np.linspace(self.range_min, self.range_max, res)
         y = np.linspace(self.range_min, self.range_max, res)
         
         X, Y = np.meshgrid(x, y)
+        
         XY = np.array((X, Y)).T
         Z = np.zeros(XY.shape[:-1])
         for i in range(Z.shape[0]):
@@ -50,21 +48,21 @@ class BeesAlgorithm():
         ax.set_xlim([self.range_min, self.range_max])
         ax.set_ylim([self.range_min, self.range_max])       
         ax.contour(X, Y, Z, colors='black');
-        
-        s = np.array(self.scout)
-        ax.scatter(s[:self.ne].T[0], s[:self.ne].T[1], c='yellow', edgecolors='black')
-        ax.scatter(s[self.ne:].T[0], s[self.ne:].T[1], c='black')
-        
+
         for i in range(self.ns):
             nght = self.flower_patch[i]['nght']
             sx, sy = self.scout[i]
             ax.add_patch(patches.Rectangle((sx-nght, sy-nght), 2*nght, 2*nght, fill=False)) 
         
-        plt.show()
+        s = np.array(self.scout)
+        ax.scatter(s[self.ne:].T[0], s[self.ne:].T[1], c='black')
+        ax.scatter(s[:self.ne].T[0], s[:self.ne].T[1], c='yellow', edgecolors='black')
+        
+        plt.savefig(f"images/bees/bees_t{t}.png")
         plt.close()
         
     
-    def search(self, score_function, T, k=1, minimizing=False):
+    def search(self, score_function, T, k=1, minimizing=False, visualize=False):
         self.scout = [None] * self.ns
         self.flower_patch = [None] * self.ns
         self.nght = [self.initial_nght] * self.ns
@@ -75,7 +73,9 @@ class BeesAlgorithm():
             self.initialize_flower_patch(i)
         
         for t in range(T):
-            self.visualize(t)
+            if visualize and self.n == 2:
+                self.visualize2d(t)
+                
             self.waggle_dance()
             
             for i in range(self.nb):
@@ -148,8 +148,7 @@ class BeesAlgorithm():
     def get_best_solutions(self, k=1):
         self.best_sites.sort(key=self.score_function, reverse=True)
         best_k_sites = self.best_sites[:k]
-        return best_k_sites, list(map(self.score_function, best_k_sites))
-    
+        return best_k_sites
     
         
 if __name__ == '__main__':
@@ -159,8 +158,8 @@ if __name__ == '__main__':
     rastrigin_fct = lambda x: 10*len(x)+sum([x[i]**2-10*np.cos(2*np.pi*x[i]) for i in range(len(x))])
     himmelblau_fct = lambda x: (x[0]**2+x[1]-11)**2+(x[0]+x[1]**2-7)**2
     
-    ba = BeesAlgorithm(n=2, ns=300, ne=20, nb=20, nre=30, nrb=5, range_min=-5, range_max=5, shrink_factor=0.8, stgn_lim=10)
-    solutions = ba.search(rastrigin_fct, T=1000, minimizing=True)
+    bees = BeesAlgorithm(n=2, ns=20, ne=2, nb=5, nre=5, nrb=2, range_min=-5, range_max=5, shrink_factor=0.8, stgn_lim=10)
+    solutions = bees.search(himmelblau_fct, T=100, minimizing=True, visualize=True)
     print(solutions)
     
     
