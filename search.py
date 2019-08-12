@@ -15,11 +15,11 @@ class SwarmSearchAlgorithm(abstract):
         self.range_min = range_min
         self.range_max = range_max
         
-        self.population = []
+        self.population = None
     
     
-    def search(self, score_function, T, k=1, minimize=True, visualize=False):
-        self.score_function = score_function if not minimize else lambda x: -score_function(x)
+    def search(self, cost_function, T, k=1, minimize=True, visualize=False):
+        self.cost_function = cost_function if minimize else lambda x: -cost_function(x)
         self.initialize()
         
         if visualize:
@@ -37,7 +37,7 @@ class SwarmSearchAlgorithm(abstract):
         fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111, aspect='equal')
         
-        self.plot_score_function(ax)
+        self.plot_cost_function(ax)
         self.plot_population(ax)
         self.highlight_population(ax)
         
@@ -46,17 +46,15 @@ class SwarmSearchAlgorithm(abstract):
         plt.close()
         
     
-    def plot_score_function(self, ax):
-        
+    def plot_cost_function(self, ax):
         if self.d == 1:
             ax.set_xlim([self.range_min, self.range_max])
             
             x = np.linspace(self.range_min, self.range_max, 100)
             y = np.zeros(x.shape[0])
             for i in range(x.shape[0]):
-                y[i] = self.score_function(x[i])
+                y[i] = self.cost_function(x[i])
             ax.plot(x, y)
-            
         elif self.d == 2:
             ax.set_xlim([self.range_min, self.range_max])
             ax.set_ylim([self.range_min, self.range_max]) 
@@ -70,39 +68,36 @@ class SwarmSearchAlgorithm(abstract):
             Z = np.zeros(XY.shape[:-1])
             for i in range(Z.shape[0]):
                 for j in range(Z.shape[1]):
-                    Z[i,j] = self.score_function(XY[i,j])
+                    Z[i,j] = self.cost_function(XY[i,j])
                   
             ax.contour(X, Y, Z, colors='black');
         
         
     def plot_population(self, ax):
         if self.d == 1:
-            ax.scatter(self.population, [self.score_function(i) for i in self.population])
+            ax.scatter(self.population, [self.cost_function(i) for i in self.population])
         elif self.d == 2:
             ax.scatter(self.population.T[0], self.population.T[1])
+
     
+    def get_best_k_solutions(self, k, minimize):
+        idxs = np.argsort([self.cost_function(i) for i in self.population])
+        self.population = self.population[idxs]
+        return self.population[:k], [(1 if minimize else -1) * self.cost_function(i) for i in self.population[:k]]
+            
         
     @abstractmethod
     def initialize(self):
+        self.population = np.uniform(self.range_min, self.range_max, (self.np, self.d))
+        
+    
+    
+    @abstractmethod
+    def single_search_step(self):
         raise NotImplementedError
 
     
     @abstractmethod
     def highlight_population(self, ax):
-        raise NotImplementedError
-    
-    
-    @abstractmethod
-    def single_search_step():
-        raise NotImplementedError
-    
-    
-    def get_best_k_solutions(self, k, minimize):
-        idxs = np.argsort([self.score_function(i) for i in self.population])
-        self.population = self.population[idxs]
-        return self.population[:k], [(-1 if minimize else 1) * self.score_function(i) for i in self.population[:k]]
-        
-    
-    
-    
+        raise NotImplementedError       
         

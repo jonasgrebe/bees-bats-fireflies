@@ -1,8 +1,10 @@
+
 from search import SwarmSearchAlgorithm
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+
 
 class BeesAlgorithm(SwarmSearchAlgorithm):
     
@@ -16,6 +18,7 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
         self.shrink_factor = shrink_factor
         self.stgn_lim = stgn_lim
         self.initial_nght = 1.0
+        
     
     def initialize(self):
         self.population = np.zeros((self.np, self.d))
@@ -25,15 +28,7 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
         
         for i in range(self.np):
             self.initialize_flower_patch(i)
-            
-    
-    def highlight_population(self, ax):
-        return
-        for i in range(self.np):
-            nght = self.flower_patch[i]['nght']
-            sx, sy = self.population[i]
-            ax.add_patch(patches.Rectangle((sx-nght, sy-nght), 2*nght, 2*nght, fill=False)) 
-        
+
     
     def single_search_step(self):                
         self.waggle_dance()
@@ -46,6 +41,14 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
         for i in range(self.nb, self.np):
             self.global_search(i)
     
+        
+    def highlight_population(self, ax):
+        return
+        for i in range(self.np):
+            nght = self.flower_patch[i]['nght']
+            sx, sy = self.population[i]
+            ax.add_patch(patches.Rectangle((sx-nght, sy-nght), 2*nght, 2*nght, fill=False)) 
+        
         
     def initialize_flower_patch(self, i):
         self.population[i] = self.create_random_scout()
@@ -65,8 +68,8 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
     
         
     def waggle_dance(self):
-        idxs = np.argsort([self.score_function(s) for s in self.population])
-        self.population = self.population[idxs[::-1]]
+        idxs = np.argsort([self.cost_function(s) for s in self.population])
+        self.population = self.population[idxs]
         
         self.flower_patch = list(np.array(self.flower_patch)[idxs])
         
@@ -79,8 +82,8 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
     def local_search(self, i):
         for j in range(self.flower_patch[i]['foragers']):
             forager = self.create_random_forager(i)
-            forager_score = self.score_function(forager)
-            if forager_score > self.score_function(self.population[i]):
+            forager_score = self.cost_function(forager)
+            if forager_score < self.cost_function(self.population[i]):
                 self.population[i] = forager
                 self.flower_patch[i]['stagnation'] = True
             
@@ -105,8 +108,9 @@ class BeesAlgorithm(SwarmSearchAlgorithm):
                 
     def get_best_k_solutions(self, k, minimize):
         solutions = np.array(self.best_sites + list(self.population))
-        np.sort(solutions)
+        idxs = np.argsort([self.cost_function(i) for i in solutions])
+        solutions = solutions[idxs]
         best_k_solutions = solutions[:k]
-        return best_k_solutions, [(-1 if minimize else 1) * self.score_function(i) for i in best_k_solutions]
+        return best_k_solutions, [(1 if minimize else -1) * self.cost_function(i) for i in best_k_solutions]
         
         
