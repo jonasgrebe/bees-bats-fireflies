@@ -11,8 +11,9 @@ Implementation of three nature-inspired search algorithms:
 All three algorithms and their variants share a common interface. Basically, all one needs to do in order to use one of the algorithms for optimization, is invoking the ```search(objective, objective_fct, T)``` method. The parameters all algorithms have in common (algorithm-independent parameters) are the following:
 
 |parameter    | description                                                                        |domain          |
-|:-----------:|:----------------------------------------------------------------------------------:|:--------------:|
+|:-----------:|------------------------------------------------------------------------------------|----------------|
 |objective    | minimization or a maximization problem                                             |'min' or 'max'  |
+|objective_fct| python function or lambda to optimize                                              |f: R^d -> R^1   |
 |d            | dimensionality of solution-space                                                   |positive integer|
 |n            | size of the population, i.e. amount of bees, bats and fireflies                    |positive integer|
 |range_min    | lower bound of solution-space in all dimensions                                    |real number     |
