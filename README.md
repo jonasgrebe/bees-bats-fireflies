@@ -20,17 +20,18 @@ All three algorithms and their variants share a common interface. Basically, all
 |range_max    | upper bound of solution-space in all dimensions                                    |real number     |
 |T            | number of iterations                                                               |positive integer|
 
-We set these parameters for all following code snippets to exemplary values:
+We set these algorithm-independent parameters for all following code snippets to these exemplary values:
 ```python
-objective = 'min' # minimization or maximation?
-objective_fct = lambda x: x[0]**2 + x[1]**2 # function to optimize
-d = 2 # dimensionality of solution-space
-n = 100 # number of bees, bats or fireflies in the population
+objective = 'min'
+objective_fct = lambda x: sum([100*(x[i+1]-x[i])**2+(1-x[i])**2 for i in range(len(x)-1)]) # rosenbrock function
+d = 2
+n = 100
 range_min, range_max = -5.0, 5.0 # hypercube centered in origin with edge length 10.0
-T = 50 # number of iterations
+T = 50
 ```
 
 ### The Bees Algorithm
+Inspired by the foraging behavior of honeybees, Pham et a. designed an algorithm ...
 
 ```python
 from bees import BeesAlgorithm
