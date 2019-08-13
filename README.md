@@ -8,14 +8,16 @@ Implementation of three nature-inspired search algorithms:
 ## TODO: What are metaheuristics?
 
 ## How to use the algorithms?
-All three algorithms and their variants share a common interface. Basically, all one needs to do in order to use one of the algorithms for optimization, is invoking the ```search(objective, objective_fct, T)``` method. The parameters all algorithms have in common are the following:
-- **objective**: 'min' or 'max', depending on whether it is a minimization or a maximization problem
-- **objective_fct**: python-function or lambda, f: R^d -> R
-- **d**: dimensionality of solution-space
-- **n**: number of solutions in the population
-- **range_min**: lower bound of solution-space in all dimensions
-- **range_max**: upper bound of solution-space in all dimensions
-- **T**: number of iterations
+All three algorithms and their variants share a common interface. Basically, all one needs to do in order to use one of the algorithms for optimization, is invoking the ```search(objective, objective_fct, T)``` method. The parameters all algorithms have in common (algorithm-independent parameters) are the following:
+
+|parameter    | description                                                                        |domain          |
+|:-----------:|:----------------------------------------------------------------------------------:|:--------------:|
+|objective    | minimization or a maximization problem                                             |'min' or 'max'  |
+|d            | dimensionality of solution-space                                                   |positive integer|
+|n            | size of the population, i.e. amount of bees, bats and fireflies                    |positive integer|
+|range_min    | lower bound of solution-space in all dimensions                                    |real number     |
+|range_max    | upper bound of solution-space in all dimensions                                    |real number     |
+|T            | number of iterations                                                               |positive integer|
 
 We set these parameters for all following code snippets to exemplary values:
 ```python
