@@ -43,5 +43,5 @@ bat.plot_history()
 firefly = FireflyAlgorithm()
 
 solution, latency = firefly.search(objective, objective_fct, T=50)
-bat.plot_history()
+firefly.plot_history()
 ```
