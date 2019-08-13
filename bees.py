@@ -36,6 +36,7 @@ class BeesAlgorithm(BaseSearchAlgorithm):
         for i in range(self.nb, self.n):
             self.global_search(i)
 
+
     def initialize_flower_patch(self, i):
         self.solutions[i] = self.create_random_scout()
         self.flower_patch[i] = {'foragers': 0, 'nght': self.initial_nght, 'stagnation': False,'stagnation_cnt': 0}

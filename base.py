@@ -20,12 +20,15 @@ class BaseSearchAlgorithm():
         self.range_max = self.params['range_max']
 
 
-    def get_best_solution(self):
+    def get_best_solution(self, key=None):
+        if not key:
+            key = self.objective_fct
+        
         candidates = list(self.solutions)# + list(self.memory)
         if self.objective == 'min':
-            return min(candidates, key=self.objective_fct)
+            return min(candidates, key=key)
         elif self.objective == 'max':
-            return max(candidates, key=self.objective_fct)
+            return max(candidates, key=key)
 
 
     def compare_objective_value(self, s0, s1):
