@@ -12,10 +12,10 @@ All three algorithms and their variants share a common interface. Basically, all
 
 |parameter    | description                                                                        |domain          |
 |:-----------:|------------------------------------------------------------------------------------|----------------|
-|objective    | minimization or a maximization problem                                             |'min' or 'max'  |
+|objective    | minimization or maximization problem                                               |'min' or 'max'  |
 |objective_fct| python function or lambda to optimize                                              |f: R^d -> R^1   |
 |d            | dimensionality of solution-space                                                   |positive integer|
-|n            | size of the population, i.e. amount of bees, bats and fireflies                    |positive integer|
+|n            | size of the population, i.e. related to amount of bees, bats and fireflies         |positive integer|
 |range_min    | lower bound of solution-space in all dimensions                                    |real number     |
 |range_max    | upper bound of solution-space in all dimensions                                    |real number     |
 |T            | number of iterations                                                               |positive integer|
@@ -31,7 +31,18 @@ T = 50
 ```
 
 ### The Bees Algorithm
-Inspired by the foraging behavior of honeybees, Pham et a. designed an algorithm ...
+Inspired by the foraging behavior of honeybees, Pham et al. designed an algorithm that tries to mimic the way a hive of bees manages to find and harvest fertile flower patches. The basic concept underlying this algorithm can be explained in terms of three different types of patches (basic, best and elite) and two different types of bees (scouts and foragers). Scout bees randomly fly around in the solution-space and inform the other bees after each iteration about the quality of the flower patch they have found (waggle dance). The best scouts recruit a certain number of forager bees to follow them. The scouts that discovered the best of the best flower patches, the elite patches, recruit even more foragers. All the other scouts that have not been that succesful start scanning the solution space randomly again. Foragers do nothing else than searching for even better flower patches nearby the ones their scout discovered, so they are actually only performing local search, while the scout bees are searching globally.
+
+This are the algorithm-dependent parameters of the Bees Algorithm:
+
+|parameter    | description                                                                        |domain          |
+|:-----------:|------------------------------------------------------------------------------------|----------------|
+|nb           | number of best patches                                                             |positive integer|
+|ne           | number of elite patches (smaller than nb)                                          |positive integer|
+|nrb          | number of recruited foragers per best patch                                        |positive integer|
+|nre          | number of recruited foragers per elite patch                                       |positive integer|
+|shrink_factor| factor for shrinking the patch size                                                |(0, 1]     |
+|stgn_lim     | stagnation limit                                                                   |positive integer|
 
 ```python
 from bees import BeesAlgorithm
