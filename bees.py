@@ -6,10 +6,10 @@ class BeesAlgorithm(BaseSearchAlgorithm):
     def __init__(self, **kwargs):
         super().__init__("bees", **kwargs)
 
-        self.ne = self.params['ne']
         self.nb = self.params['nb']
-        self.nre = self.params['nre']
+        self.ne = self.params['ne']
         self.nrb = self.params['nrb']
+        self.nre = self.params['nre']
         self.shrink_factor = self.params['shrink_factor']
         self.stgn_lim = self.params['stgn_lim']
         
@@ -87,5 +87,5 @@ class BeesAlgorithm(BaseSearchAlgorithm):
             if self.flower_patch[i]['stagnation_cnt'] < self.stgn_lim:
                 self.flower_patch[i]['stagnation_cnt'] += 1
             else:
-                self.memory.append(self.solutions[i])
+                self.get_best_solution()
                 self.initialize_flower_patch(i)

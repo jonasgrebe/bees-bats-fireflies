@@ -1,6 +1,9 @@
-from time import perf_counter
 import numpy as np
 import matplotlib.pyplot as plt
+
+from time import perf_counter
+import imageio
+import os
 
 class BaseSearchAlgorithm():
     
@@ -11,24 +14,30 @@ class BaseSearchAlgorithm():
 
         self.solutions = []
         self.history = []
-        self.memory = []
+        self.best_solution = None
         self.params = kwargs
 
         self.n = self.params['n']
         self.d = self.params['d']
         self.range_min = self.params['range_min']
         self.range_max = self.params['range_max']
-
+        
+        self.test = []
+        
 
     def get_best_solution(self, key=None):
         if not key:
             key = self.objective_fct
         
-        candidates = list(self.solutions)# + list(self.memory)
         if self.objective == 'min':
-            return min(candidates, key=key)
+            candidate = min(self.solutions, key=key)
         elif self.objective == 'max':
-            return max(candidates, key=key)
+            candidate = max(self.solutions, key=key)
+            
+        if self.best_solution is None or self.compare_objective_value(candidate, self.best_solution) < 0:
+            self.best_solution = candidate
+        
+        return self.best_solution
 
 
     def compare_objective_value(self, s0, s1):
@@ -48,22 +57,28 @@ class BaseSearchAlgorithm():
             return np.argsort([self.objective_fct(s)for s in self.solutions])[::-1].ravel()
         
 
-    def search(self, objective, objective_fct, T):
+    def search(self, objective, objective_fct, T, visualize=False):
         self.objective = objective
         self.objective_fct = objective_fct
-
+        self.history = np.zeros((T, self.d))
+        self.best_solution = np.random.uniform(self.range_min, self.range_max, self.d)
+        self.initialize()
+        
         t_start = perf_counter()
 
-        self.initialize()
-        self.visualize_search_step()
-        for t in range(1, T+1):
+        if visualize:
+            self.visualize_search_step()
+            
+        for t in range(T):
             self.execute_search_step()
-            self.history.append(self.get_best_solution())
-            self.visualize_search_step(t)
+            self.history[t] = self.get_best_solution() 
+
+            if visualize:
+                self.visualize_search_step(t+1)
 
         t_end = perf_counter()
 
-        return (self.history[-1], self.objective_fct(self.history[-1])), t_end-t_start
+        return (self.best_solution, self.objective_fct(self.best_solution)), t_end-t_start
 
 
     def plot_history(self):
@@ -101,11 +116,24 @@ class BaseSearchAlgorithm():
 
         ax.contourf(X, Y, Z, 20, cmap='Greys');
         ax.contour(X, Y, Z, 20, colors='black', linestyles='dotted');
-
-
-        ax.scatter(self.solutions.T[0], self.solutions.T[1], c='black')
+        
+        ax.scatter(self.solutions.T[0], self.solutions.T[1], marker='.', c='black')
+        ax.scatter(self.best_solution[0], self.best_solution[1], marker='X', s=100, c='red')
         
         plt.savefig(f"images/{self.name}/{self.name}_{t}.png")
         plt.close()
+        
+    def generate_gif(self, filename=None):
+        if not filename:
+            filename = self.name
+        
+        plot_paths = [f"images/{self.name}/"+file for file in os.listdir(f"images/{self.name}")]
+        
+        with imageio.get_writer(f"{filename}.gif", mode='I') as writer:
+            for filepath in plot_paths:
+                image = imageio.imread(filepath)
+                writer.append_data(image)
+                
+        
         
         

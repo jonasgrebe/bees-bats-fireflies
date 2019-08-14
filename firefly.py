@@ -13,7 +13,7 @@ class FireflyAlgorithm(BaseSearchAlgorithm):
     
     def initialize(self):
         self.solutions = np.random.uniform(self.range_min, self.range_max, (self.n, self.d))
-            
+        
     
     def execute_search_step(self):
         for i in range(self.n):

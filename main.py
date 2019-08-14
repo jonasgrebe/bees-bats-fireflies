@@ -9,32 +9,38 @@ rastrigin_fct = lambda x: 10*len(x)+sum([x[i]**2-10*np.cos(2*np.pi*x[i]) for i i
 himmelblau_fct = lambda x: (x[0]**2+x[1]-11)**2+(x[0]+x[1]**2-7)**2
 beale_fct = lambda x: (1.3-x[0]+x[0]*x[1])**2+(2.25-x[0]+x[0]*x[1]**2)**2+(2.625-x[0]+x[0]+x[1]**3)**2
 
-objective_fct = himmelblau_fct
+objective_fct = rastrigin_fct
 d = 2
+n = 100
+range_min, range_max = -10.0, 10.0
+T = 100
 
 
-bat = BatAlgorithm(d=d, n=100, range_min=-5.0, range_max=5.0,
+bat = BatAlgorithm(d=d, n=n, range_min=range_min, range_max=range_max,
                    a=0.5, r=0.5, q_min=0.0, q_max=3.0)
 
-bees = BeesAlgorithm(d=d, n=100, range_min=-5.0, range_max=5.0,
-                     ne=40, nb=10, nre=10, nrb=5, shrink_factor=0.8, stgn_lim=50)
+bees = BeesAlgorithm(d=d, n=n, range_min=range_min, range_max=range_max,
+                     nb=50, ne=20, nrb=5, nre=10, shrink_factor=0.8, stgn_lim=5)
 
-firefly = FireflyAlgorithm(d=d, n=100, range_min=-5.0, range_max=5.0,
+firefly = FireflyAlgorithm(d=d, n=n, range_min=range_min, range_max=range_max,
                            alpha=1.0, beta0=1.0, gamma=0.5)
 
 
-solution, _ = bat.search('min', objective_fct, 50)
+solution, latency = bat.search('min', objective_fct, T, visualize=True)
 bat.plot_history()
-print(solution)
+bat.generate_gif()
+print(solution, latency)
 
 
-solution, _ = bees.search('min', objective_fct, 50)
+solution, latency = bees.search('min', objective_fct, T, visualize=True)
 bees.plot_history()
-print(solution)
+bees.generate_gif()
+print(solution, latency)
 
 
-solution, _ = firefly.search('min', objective_fct, 50)
+solution, latency = firefly.search('min', objective_fct, T, visualize=True)
 firefly.plot_history()
-print(solution)
+firefly.generate_gif()
+print(solution, latency)
 
 
