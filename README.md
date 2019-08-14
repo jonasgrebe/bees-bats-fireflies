@@ -37,10 +37,10 @@ This are the algorithm-dependent parameters of the Bees Algorithm:
 
 |parameter    | description                                                                        |domain          |
 |:-----------:|------------------------------------------------------------------------------------|----------------|
-|nb           | number of best patches                                                             |positive integer|
-|ne           | number of elite patches (smaller than nb)                                          |positive integer|
-|nrb          | number of recruited foragers per best patch                                        |positive integer|
-|nre          | number of recruited foragers per elite patch                                       |positive integer|
+|nb           | number of best patches (smaller than or equal to n)                                |positive integer|
+|ne           | number of elite patches (smaller than or equal to nb                               |positive integer|
+|nrb          | number of recruited foragers per best patch (greater than 0)                       |positive integer|
+|nre          | number of recruited foragers per elite patch  (greater than nrb)                   |positive integer|
 |shrink_factor| factor for shrinking the patch size                                                |(0, 1]     |
 |stgn_lim     | stagnation limit                                                                   |positive integer|
 
