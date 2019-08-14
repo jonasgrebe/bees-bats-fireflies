@@ -73,3 +73,6 @@ firefly = FireflyAlgorithm()
 solution, latency = firefly.search(objective=objective, objective_fct=objective_fct, T=T)
 firefly.plot_history()
 ```
+## TODO: Unconstrained Optimization Example
+
+## TODO: Constrained Optimization Example
