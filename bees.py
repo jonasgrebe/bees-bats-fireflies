@@ -87,5 +87,5 @@ class BeesAlgorithm(BaseSearchAlgorithm):
             if self.flower_patch[i]['stagnation_cnt'] < self.stgn_lim:
                 self.flower_patch[i]['stagnation_cnt'] += 1
             else:
-                self.get_best_solution()
+                # self.get_best_solution()
                 self.initialize_flower_patch(i)

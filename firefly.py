@@ -28,7 +28,7 @@ class FireflyAlgorithm(BaseSearchAlgorithm):
     
     def light_intensity(self, i):
         if self.objective == 'min':
-            return 1 / self.objective_fct(self.solutions[i])
+            return 1 / (1e-16+self.objective_fct(self.solutions[i]))
         elif self.objective == 'max':
             return self.objective_fct(self.solutions[i])
 
