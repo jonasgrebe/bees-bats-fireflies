@@ -80,6 +80,4 @@ firefly.plot_history()
 ```
 ![](firefly.gif)
 
-## TODO: Unconstrained Optimization Example
-
-## TODO: Constrained Optimization Example
+## TODO: Example Notebooks
