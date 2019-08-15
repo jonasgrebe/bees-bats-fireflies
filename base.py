@@ -123,6 +123,7 @@ class BaseSearchAlgorithm():
         plt.savefig(f"images/{self.name}/{self.name}_{t}.png")
         plt.close()
         
+        
     def generate_gif(self, filename=None):
         if not filename:
             filename = self.name
