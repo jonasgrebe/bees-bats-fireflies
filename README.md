@@ -53,8 +53,6 @@ solution, latency = bees.search(objective=objective, objective_fct=objective_fct
 bees.plot_history()
 ```
 
-![](bees.gif)
-
 ### The Bat Algorithm
 
 ```python
@@ -66,8 +64,6 @@ solution, latency = bat.search(objective=objective, objective_fct=objective_fct,
 bat.plot_history()
 ```
 
-![](bat.gif)
-
 ### The Firefly Algorithm
 
 ```python
@@ -78,6 +74,5 @@ firefly = FireflyAlgorithm()
 solution, latency = firefly.search(objective=objective, objective_fct=objective_fct, T=T)
 firefly.plot_history()
 ```
-![](firefly.gif)
 
 ## TODO: Example Notebooks
