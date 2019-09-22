@@ -17,12 +17,12 @@ class BaseSearchAlgorithm():
         self.best_solution = None
         self.params = kwargs
 
-        self.n = self.params['n']
-        self.d = self.params['d']
-        self.range_min = self.params['range_min']
-        self.range_max = self.params['range_max']
+        self.n = self.params['n'] # size of population
+        self.d = self.params['d'] # dimensionality of solution space
+        self.range_min = self.params['range_min'] # lower bound in all dimensions
+        self.range_max = self.params['range_max'] # upper bound in all dimensions
         
-        self.test = []
+        self.evaluation_count = 0
         
 
     def get_best_solution(self, key=None):
@@ -55,11 +55,17 @@ class BaseSearchAlgorithm():
             return np.argsort([self.objective_fct(s) for s in self.solutions]).ravel()
         elif self.objective == 'max':
             return np.argsort([self.objective_fct(s)for s in self.solutions])[::-1].ravel()
-        
-
+    
+    
+    def evaluation_count_decorator(self, f, x):
+        self.evaluation_count += 1
+        return f(x)
+    
+    
     def search(self, objective, objective_fct, T, visualize=False):
         self.objective = objective
-        self.objective_fct = objective_fct
+        self.evaluation_count = 0
+        self.objective_fct = lambda x: self.evaluation_count_decorator(objective_fct, x)
         self.history = np.zeros((T, self.d))
         self.best_solution = np.random.uniform(self.range_min, self.range_max, self.d)
         self.initialize()
