@@ -8,6 +8,7 @@ import os
 class BaseSearchAlgorithm():
     
     def __init__(self, name, **kwargs):
+        print(name, kwargs)
         self.name = name
         self.objective = None
         self.objective_fct = None
@@ -19,8 +20,16 @@ class BaseSearchAlgorithm():
 
         self.n = self.params['n'] # size of population
         self.d = self.params['d'] # dimensionality of solution space
+        
         self.range_min = self.params['range_min'] # lower bound in all dimensions
         self.range_max = self.params['range_max'] # upper bound in all dimensions
+        
+        if np.isscalar(self.range_min):
+            self.range_min = np.repeat(self.range_min, self.d)
+            
+        if np.isscalar(self.range_max):
+            self.range_max = np.repeat(self.range_max, self.d)
+            
         
         self.evaluation_count = 0
         
@@ -62,12 +71,24 @@ class BaseSearchAlgorithm():
         return f(x)
     
     
+    def random_uniform_in_ranges(self):
+        rnd = np.zeros(self.d)
+        for i in range(self.d):
+            rnd[i] = np.random.uniform(self.range_min[i], self.range_max[i])
+        return rnd
+    
+    def clip_to_ranges(self, x):
+        for i in range(self.d):
+            x[i] = np.clip(x[i], self.range_min[i], self.range_max[i])
+        return x
+    
+    
     def search(self, objective, objective_fct, T, visualize=False):
         self.objective = objective
         self.evaluation_count = 0
         self.objective_fct = lambda x: self.evaluation_count_decorator(objective_fct, x)
         self.history = np.zeros((T, self.d))
-        self.best_solution = np.random.uniform(self.range_min, self.range_max, self.d)
+        self.best_solution = self.random_uniform_in_ranges()
         self.initialize()
         
         t_start = perf_counter()
@@ -76,7 +97,7 @@ class BaseSearchAlgorithm():
             self.visualize_search_step()
             
         for t in range(T):
-            self.execute_search_step()
+            self.execute_search_step(t)
             self.history[t] = self.get_best_solution() 
 
             if visualize:
@@ -96,7 +117,7 @@ class BaseSearchAlgorithm():
         raise NotImplementedError
 
 
-    def execute_search_step(self):
+    def execute_search_step(self, t):
         raise NotImplementedError
 
 
@@ -104,8 +125,11 @@ class BaseSearchAlgorithm():
         if self.d != 2:
             return
         
-        x = np.linspace(self.range_min, self.range_max, 100)
-        y = np.linspace(self.range_min, self.range_max, 100)
+        range_min = np.min(self.range_min)
+        range_max = np.min(self.range_max)
+        
+        x = np.linspace(range_min, range_max, 100)
+        y = np.linspace(range_min, range_max, 100)
         
         X, Y = np.meshgrid(x, y)
         
@@ -117,8 +141,10 @@ class BaseSearchAlgorithm():
         
         fig = plt.figure(figsize=(8, 8))
         ax = fig.add_subplot(111, aspect='equal')
-        ax.set_xlim([self.range_min, self.range_max])
-        ax.set_ylim([self.range_min, self.range_max])       
+        
+        
+        ax.set_xlim([range_min, range_max])
+        ax.set_ylim([range_min, range_max])       
 
         ax.contourf(X, Y, Z, 20, cmap='Greys');
         ax.contour(X, Y, Z, 20, colors='black', linestyles='dotted');

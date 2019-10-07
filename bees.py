@@ -24,7 +24,7 @@ class BeesAlgorithm(BaseSearchAlgorithm):
             self.initialize_flower_patch(i)
 
 
-    def execute_search_step(self):
+    def execute_search_step(self, t):
         self.waggle_dance()
 
         for i in range(self.nb):
@@ -40,14 +40,14 @@ class BeesAlgorithm(BaseSearchAlgorithm):
 
 
     def create_random_scout(self):
-        return np.random.uniform(self.range_min, self.range_max, self.d)
+        return self.random_uniform_in_ranges()
 
 
     def create_random_forager(self, i):
-        forager = np.zeros_like(self.solutions[i])
+        nght = self.flower_patch[i]['size']
+        forager = np.random.uniform(-1, 1) * nght + self.solutions[i]
         for j in range(self.d):
-            nght = self.flower_patch[i]['size']
-            forager[j] = np.clip(np.random.uniform(-1, 1) * nght + self.solutions[i][j], self.range_min, self.range_max)
+            forager[j] = np.clip(forager[j], self.range_min[j], self.range_max[j])
         return forager
 
 
@@ -94,7 +94,7 @@ class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
             self.initialize_flower_patch(i)
 
 
-    def execute_search_step(self):
+    def execute_search_step(self, t):
         self.waggle_dance()
 
         for i in range(self.nb):
@@ -112,14 +112,13 @@ class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
 
 
     def create_random_scout(self):
-        return np.random.uniform(self.range_min, self.range_max, self.d)
+        return self.random_uniform_in_ranges()
 
 
     def create_random_forager(self, i):
-        forager = np.zeros_like(self.solutions[i])
-        for j in range(self.d):
-            nght = self.flower_patch[i]['size']
-            forager[j] = np.clip(np.random.uniform(-1, 1) * nght + self.solutions[i][j], self.range_min, self.range_max)
+        nght = self.flower_patch[i]['size']
+        forager = np.random.uniform(-1, 1) * nght + self.solutions[i]
+        self.clip_to_ranges(forager)
         return forager
 
 
@@ -131,7 +130,7 @@ class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
 
 
     def local_search(self, i):
-        for j in range(self.nrb if i < self.nb else self.nre):
+        for j in range(self.nre if i < self.ne else self.nrb):
             forager = self.create_random_forager(i)
             if self.compare_objective_value(forager, self.solutions[i]) < 0:
                 self.solutions[i] = forager

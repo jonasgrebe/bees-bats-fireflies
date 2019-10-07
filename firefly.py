@@ -12,9 +12,12 @@ class FireflyAlgorithm(BaseSearchAlgorithm):
 
 
     def initialize(self):
-        self.solutions = np.random.uniform(self.range_min, self.range_max, (self.n, self.d))
-
-    def execute_search_step(self):
+        self.solutions = np.zeros(shape=(self.n, self.d))
+        for i in range(self.n):
+            self.solutions[i] = self.random_uniform_in_ranges()
+            
+            
+    def execute_search_step(self, t):
         for i in range(self.n):
             for j in range(self.n):
 
@@ -23,7 +26,7 @@ class FireflyAlgorithm(BaseSearchAlgorithm):
                     r_ij = np.sqrt(np.sum(np.square(diff_ij)))
                     beta_ij = self.beta0 * np.exp(-self.gamma * r_ij**2)
                     self.solutions[i] += beta_ij * diff_ij + self.alpha * np.random.uniform(-0.5, 0.5, self.d)
-
+                    self.clip_to_ranges(self.solutions[i])
 
     def light_intensity(self, i):
         if self.objective == 'min':
@@ -43,10 +46,11 @@ class SortedFireflyAlgorithm(BaseSearchAlgorithm):
 
 
     def initialize(self):
-        self.solutions = np.random.uniform(self.range_min, self.range_max, (self.n, self.d))
+        self.solutions = np.zeros(shape=(self.n, self.d))
+        for i in range(self.n):
+            self.solutions[i] = self.random_uniform_in_ranges()
 
-
-    def execute_search_step(self):
+    def execute_search_step(self, t):
         idxs = np.argsort([self.light_intensity(i) for i in range(self.n)])
         self.solutions = self.solutions[idxs]
         for i in range(self.n-1):
@@ -55,7 +59,8 @@ class SortedFireflyAlgorithm(BaseSearchAlgorithm):
             r_ij = np.sqrt(np.sum(np.square(diff_ij)))
             beta_ij = self.beta0 * np.exp(-self.gamma * r_ij**2)
             self.solutions[i] += beta_ij * diff_ij + self.alpha * np.random.uniform(-0.5, 0.5, self.d)
-
+            self.clip_to_ranges(self.solutions[i])
+            
 
     def light_intensity(self, i):
         if self.objective == 'min':
