@@ -44,7 +44,7 @@ class BaseSearchAlgorithm():
             candidate = max(self.solutions, key=key)
             
         if self.best_solution is None or self.compare_objective_value(candidate, self.best_solution) < 0:
-            self.best_solution = candidate
+            self.best_solution = np.copy(candidate)
         
         return self.best_solution
 

@@ -70,7 +70,7 @@ class BeesAlgorithm(BaseSearchAlgorithm):
         self.initialize_flower_patch(i)
             
 
-class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
+class ImprovedBeesAlgorithm(BeesAlgorithm):
 
     def __init__(self, **kwargs):
         super().__init__("bees", **kwargs)
@@ -83,16 +83,7 @@ class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
         self.sl = self.params['sl'] # stagnation limit
 
         self.initial_size = 1.0
-
-
-    def initialize(self):
-        self.solutions = np.zeros((self.n, self.d))
-        self.flower_patch = [None] * self.n
-        self.size = [self.initial_size] * self.n
-
-        for i in range(self.n):
-            self.initialize_flower_patch(i)
-
+        
 
     def execute_search_step(self, t):
         self.waggle_dance()
@@ -109,36 +100,6 @@ class ImprovedBeesAlgorithm(BaseSearchAlgorithm):
     def initialize_flower_patch(self, i):
         self.solutions[i] = self.create_random_scout()
         self.flower_patch[i] = {'size': self.initial_size, 'scnt': self.sl}
-
-
-    def create_random_scout(self):
-        return self.random_uniform_in_ranges()
-
-
-    def create_random_forager(self, i):
-        nght = self.flower_patch[i]['size']
-        forager = np.random.uniform(-1, 1) * nght + self.solutions[i]
-        self.clip_to_ranges(forager)
-        return forager
-
-
-    def waggle_dance(self):
-        idxs = self.argsort_objective()
-        self.solutions = self.solutions[idxs]
-        self.flower_patch = np.array(self.flower_patch)[idxs].ravel()
-        # recruitment is done in header of local search loop
-
-
-    def local_search(self, i):
-        for j in range(self.nre if i < self.ne else self.nrb):
-            forager = self.create_random_forager(i)
-            if self.compare_objective_value(forager, self.solutions[i]) < 0:
-                self.solutions[i] = forager
-                self.initialize_flower_patch(i)
-
-
-    def global_search(self, i):
-        self.initialize_flower_patch(i)
 
 
     def shrink_neighborhood(self, i):
