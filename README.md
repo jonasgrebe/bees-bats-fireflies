@@ -26,6 +26,11 @@ All three algorithms and their variants share a common interface. Basically, all
 |ne           | number of elite patches (smaller than or equal to nb                               |positive integer|
 |nrb          | number of recruited foragers per best patch (greater than 0)                       |positive integer|
 |nre          | number of recruited foragers per elite patch  (greater than nrb)                   |positive integer|
+
+Additional parameters for the Improved Bees Algorithm that includes neighborhood shrinking and site abandonment:
+
+|parameter    | description                                                                        |domain          |
+|:-----------:|------------------------------------------------------------------------------------|----------------|
 |sf           | factor for shrinking the patch size                                                |(0, 1]          |
 |sl           | stagnation limit                                                                   |positive integer|
 
