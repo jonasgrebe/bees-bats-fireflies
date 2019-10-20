@@ -55,6 +55,7 @@ Additional parameters for the Improved Bees Algorithm that includes neighborhood
 
 ## Example Notebooks
 You can find exemplary applications of these three implemented metaheuristics in the following few notebooks:
-- mle_cauchy.ipynb: Maximum Likelihood Estimation for randomly generated cauchy-distributed samples
-- spring_design.ipynb: Spring weight minimization given some constraints
-- visualize.ipynb: Example on how to visualize the algorithms in the two-dimensional case
+- mle_cauchy_notebook.ipynb: Maximum Likelihood Estimation for randomly generated cauchy-distributed samples
+- spring_design_notebook.ipynb: Spring weight minimization given some constraints
+- visualize_notebook.ipynb: Example on how to visualize the algorithms in the two-dimensional case
+- cluster_notebook.ipynb: Attempt to cluster iris data set and generated data set with the metaheuristics
