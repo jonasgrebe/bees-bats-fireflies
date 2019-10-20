@@ -76,7 +76,7 @@ firefly = FireflyAlgorithm(d=d, n=n, range_min=range_min, range_max=range_max,
                            alpha=0.5, beta_max=1.0, gamma=1.0)
 
 
-for i, algo in enumerate([firefly]):
+for i, algo in enumerate([rand, bees, bat, firefly]):
     
     x_list = []
     y_list = []
