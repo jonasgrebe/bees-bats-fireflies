@@ -5,8 +5,6 @@ Implementation of three nature-inspired search algorithms:
 - Bat Algorithm [[Yang, 2010](https://arxiv.org/abs/1004.4170v1)]
 - Firefly Algorithm [[Yang, 2008](https://books.google.de/books?id=iVB_ETlh4ogC&lpg=PR5&ots=DwgyslGEp9&lr&hl=de&pg=PR5#v=onepage&q&f=false)]
 
-## TODO: What are metaheuristics?
-
 ## How to use the algorithms?
 All three algorithms and their variants share a common interface. Basically, all one needs to do in order to use one of the algorithms for optimization, is invoking the ```search(objective, objective_fct, T)``` method. The parameters all algorithms have in common (algorithm-independent parameters) are the following:
 
