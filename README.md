@@ -1,4 +1,4 @@
-# Nature-inspired Metaheuristics: Bees, Bats and Fireflies
+# Nature-inspired Metaheuristics: Bees, Bats, and Fireflies
 
 Implementation of three nature-inspired search algorithms:
 - Bees Algorithm [[Pham et al., 2005](https://www.researchgate.net/publication/260985621_The_Bees_Algorithm_Technical_Note)]
